@@ -77,8 +77,13 @@ public:
 
 	Keypad(char *userKeymap, byte *row, byte *col, byte numRows, byte numCols);
 
-	virtual void pin_mode(byte pinNum, byte mode) { pinMode(pinNum, mode); }
-	virtual void pin_write(byte pinNum, boolean level) { digitalWrite(pinNum, level); }
+#if defined(ARDUINO_ARCH_MEGAAVR)
+        virtual void pin_mode(byte pinNum, PinMode mode) { pinMode(pinNum, mode); }
+        virtual void pin_write(byte pinNum, PinStatus level) { digitalWrite(pinNum, level); }
+#else
+        virtual void pin_mode(byte pinNum, byte mode) { pinMode(pinNum, mode); }
+        virtual void pin_write(byte pinNum, boolean level) { digitalWrite(pinNum, level); }
+#endif
 	virtual int  pin_read(byte pinNum) { return digitalRead(pinNum); }
 
 	uint bitMap[MAPSIZE];	// 10 row x 16 column array of bits. Except Due which has 32 columns.
